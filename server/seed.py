@@ -1,23 +1,15 @@
-#!/usr/bin/env python3
+from app import app, db
+from models import Newsletter
 
-from faker import Faker
-
-from app import app
-from models import db, Newsletter
-
+# Initialize app context
 with app.app_context():
-    
-    fake = Faker()
+    print("Seeding database...")
 
-    Newsletter.query.delete()
+    db.session.add_all([
+        Newsletter(title="First Newsletter", body="This is the first newsletter."),
+        Newsletter(title="Second Newsletter", body="This is the second newsletter."),
+        Newsletter(title="Third Newsletter", body="This is the third newsletter."),
+    ])
 
-    newsletters = []
-    for i in range(50):
-        newsletter = Newsletter(
-            title = fake.text(max_nb_chars=20),
-            body = fake.paragraph(nb_sentences=5),
-        )
-        newsletters.append(newsletter)
-
-    db.session.add_all(newsletters)
     db.session.commit()
+    print("Seeding complete!")
